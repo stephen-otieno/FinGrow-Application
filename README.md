@@ -10,8 +10,14 @@ The platform automates core welfare operations with:
 ---
 
 ## 🌐 Screenshot
-<!-- Replace the link below with an actual screenshot of your landing page -->
-![Landing Page Screenshot](https://your-screenshot-url.com)
+### Landing Page
+<img width="1896" height="782" alt="image" src="https://github.com/user-attachments/assets/2d726189-c0d0-42a3-b43a-69ec356f91be" />
+<img width="1900" height="835" alt="image" src="https://github.com/user-attachments/assets/a752cfe5-54dc-4db2-ba80-6df5f96f4115" />
+
+### User Dashboard
+<img width="1917" height="701" alt="image" src="https://github.com/user-attachments/assets/9f262233-b03c-424c-bc38-a008dfffe52c" />
+
+
 
 ---
 
