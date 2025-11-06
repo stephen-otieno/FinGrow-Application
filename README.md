@@ -1,4 +1,4 @@
-# 💼 FinGrow - MERN Welfare Management System
+#  FinGrow - MERN Welfare Management System
 
 FinGrow is a **full-stack digital welfare management platform** built using the **MERN stack** (MongoDB, Express.js, React, Node.js).  
 It provides a clean, modern interface for welfare members to **manage their savings**, **apply for loans**, and **track their financial progress**.  
@@ -9,7 +9,7 @@ The platform automates core welfare operations with:
 
 ---
 
-## 🌐 Screenshot
+##  Screenshot
 ### Landing Page
 <img width="1896" height="782" alt="image" src="https://github.com/user-attachments/assets/2d726189-c0d0-42a3-b43a-69ec356f91be" />
 <img width="1900" height="835" alt="image" src="https://github.com/user-attachments/assets/a752cfe5-54dc-4db2-ba80-6df5f96f4115" />
@@ -21,14 +21,14 @@ The platform automates core welfare operations with:
 
 ---
 
-## 🚀 Core Features
+##  Core Features
 
-### 🔐 Authentication
+###  Authentication
 - Secure JWT (JSON Web Token) authentication.
 - Password hashing using **bcrypt**.
 - Role-based access (Member vs. Admin).
 
-### 💰 Savings Management
+###  Savings Management
 - Members can make direct deposits through **M-Pesa STK Push**.
 - Real-time balance and transaction tracking.
 
@@ -38,19 +38,19 @@ The platform automates core welfare operations with:
 - Approved loans automatically disbursed via **M-Pesa B2C**.
 - Automatic **5% interest calculation** on approved loans.
 
-### 📊 User Dashboard
+###  User Dashboard
 - Personalized view showing:
   - Total savings
   - Loan status
   - Transaction history
 
-### 🧭 Admin Dashboard
+###  Admin Dashboard
 - Comprehensive overview of:
   - All members
   - Loan requests
   - Deposits and disbursements
 
-### ✉️ Email Notifications
+###  Email Notifications
 Automated emails (via Nodemailer) are sent for:
 - User Registration  
 - Savings Deposit  
@@ -58,13 +58,13 @@ Automated emails (via Nodemailer) are sent for:
 - Loan Approval / Rejection  
 - Loan Disbursement  
 
-### 📬 Public Contact Form
+###  Public Contact Form
 A public-facing contact page allows anyone to message the admin.  
 Messages are saved in the database and trigger email notifications.
 
 ---
 
-## 🧰 Technology Stack
+##  Technology Stack
 
 | Layer        | Technology |
 |---------------|-------------|
@@ -76,7 +76,7 @@ Messages are saved in the database and trigger email notifications.
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 ```
 fingrow/
 ├── backend/
@@ -101,11 +101,11 @@ fingrow/
 
 ```
 
-## ⚙️ Getting Started
+##  Getting Started
 
 Follow these steps to set up FinGrow on your local machine.
 
-### 🧾 Prerequisites
+###  Prerequisites
 - Node.js (v16 or later)  
 - MongoDB Atlas account  
 - Safaricom Daraja Developer Account  
@@ -114,7 +114,7 @@ Follow these steps to set up FinGrow on your local machine.
 
 ---
 
-## 🛠️ 1. Backend Setup
+##  1. Backend Setup
 
 ### Clone the Repository
 ```
@@ -159,11 +159,11 @@ B2C_QUEUE_TIMEOUT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/queue
 B2C_RESULT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/result
 
 
-### 💡 Tip: Create a new app in the Daraja Portal
+###  Tip: Create a new app in the Daraja Portal
  that has both “Lipa Na M-PESA” and “M-PESA B2C” APIs enabled.
 Use its credentials for the variables above.
 
-## 💻 2. Frontend Setup
+##  2. Frontend Setup
 Navigate to Frontend
 ```
 cd ../frontend
@@ -175,11 +175,11 @@ npm install
 Create a .env File
 VITE_API_URL=http://localhost:5000
 
-🏃‍♂️ Running the Application Locally
+ Running the Application Locally
 
 You’ll need three terminals open:
 
-🧩 Terminal 1 — Backend
+ Terminal 1 — Backend
 ```
 cd fingrow/backend
 npm run server
@@ -187,7 +187,7 @@ npm run server
 
 API runs at http://localhost:5000
 
-🧩 Terminal 2 — Frontend
+ Terminal 2 — Frontend
 ```
 cd fingrow/frontend
 npm run dev
@@ -195,7 +195,7 @@ npm run dev
 
 App runs at http://localhost:5173
 
-🧩 Terminal 3 — Ngrok (for Daraja callbacks)
+ Terminal 3 — Ngrok (for Daraja callbacks)
 ```
 ngrok http 5000
 ```
@@ -205,7 +205,7 @@ and update it in your backend .env for all callback URLs.
 
 Restart your backend after updating .env.
 
-### 🧮 Example User Flow
+###  Example User Flow
 
 Member registers an account → receives confirmation email.
 
