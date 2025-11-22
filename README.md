@@ -3,6 +3,13 @@
 FinGrow is a full-stack MERN web application designed to digitize and automate the operations of informal welfare groups ("Chamas"). It streamlines savings, loan processing, and record-keeping through real-time dashboards and seamless M-Pesa integration.
 
 ---
+🔗 Quick Links
+
+🚀 View Live Application > https://fingrow-iota.vercel.app/
+
+📊 View Pitch Deck > https://www.canva.com/design/DAG4rFojGCA/rz18FaRjaNQQ2_EJbun9nA/view?utm_content=DAG4rFojGCA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3eb5209f29
+
+---
 
 ## 🚀 Project Overview
 
