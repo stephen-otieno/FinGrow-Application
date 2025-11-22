@@ -1,5 +1,3 @@
-// backend/models/Loan.js
-
 import mongoose from 'mongoose';
 
 const loanSchema = mongoose.Schema(
@@ -9,7 +7,19 @@ const loanSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
-    amount: { type: Number, required: true },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    // --- NEW FIELDS ---
+    // Not required: true to allow old loans to exist without errors
+    repaymentPeriod: {
+      type: Number,
+    },
+    loanPurpose: {
+      type: String,
+    },
+    // -----------------
     status: {
       type: String,
       required: true,
@@ -28,8 +38,13 @@ const loanSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    disbursementPhone: {
+      type: String,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Loan = mongoose.model('Loan', loanSchema);

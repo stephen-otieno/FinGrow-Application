@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom'; // 1. Import Link
+import { useNavigate, Link } from 'react-router-dom';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -23,68 +23,82 @@ const RegisterPage = () => {
   };
 
   return (
-    // This is the className that makes it match the login page
-    <div className="max-w-md mx-auto mt-10 p-8 border rounded-lg shadow-lg bg-white">
-      <h1 className="text-3xl font-bold mb-6 text-center">Create Your Account</h1>
-      
-      {error && <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">{error}</div>}
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-gray-700">Name</label>
-          <input 
-            type="text" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            className="w-full p-3 border rounded-md mt-1" 
-            required 
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700">Email</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            className="w-full p-3 border rounded-md mt-1" 
-            required 
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700">Phone (e.g., 0712345678)</label>
-          <input 
-            type="tel" 
-            value={phone} 
-            onChange={(e) => setPhone(e.target.value)} 
-            className="w-full p-3 border rounded-md mt-1" 
-            required 
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700">Password</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            className="w-full p-3 border rounded-md mt-1" 
-            required 
-          />
-        </div>
-        <button 
-          type="submit" 
-          className="w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700"
-        >
-          Register
-        </button>
-      </form>
+    // --- BACKGROUND CONTAINER ---
+    <div 
+      className="w-full min-h-[80vh] flex items-center justify-center bg-cover bg-center relative py-12"
+      style={{ backgroundImage: "url('/money-bg.png')" }} 
+    >
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black opacity-40"></div>
 
-      {/* 2. ADD THIS PARAGRAPH AT THE BOTTOM */}
-      <p className="text-center mt-6">
-        Already have an account?{' '}
-        <Link to="/login" className="text-blue-600 hover:underline">
-          Login Here
-        </Link>
-      </p>
+      {/* Form Container */}
+      <div className="relative z-10 max-w-md w-full m-4 p-8 border border-yellow-200 rounded-lg shadow-2xl bg-white">
+        
+        {/* Gold Heading */}
+        <h1 className="text-3xl font-bold mb-6 text-center text-yellow-700">
+          Create Your Account
+        </h1>
+        
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 mb-4 rounded border border-red-200">{error}</div>
+        )}
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-yellow-700 font-medium">Name</label>
+            <input 
+              type="text" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              className="w-full p-3 border border-yellow-200 rounded-md mt-1 focus:ring-2 focus:ring-yellow-500 outline-none" 
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-yellow-700 font-medium">Email</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              className="w-full p-3 border border-yellow-200 rounded-md mt-1 focus:ring-2 focus:ring-yellow-500 outline-none" 
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-yellow-700 font-medium">Phone (e.g., 0712345678)</label>
+            <input 
+              type="tel" 
+              value={phone} 
+              onChange={(e) => setPhone(e.target.value)} 
+              className="w-full p-3 border border-yellow-200 rounded-md mt-1 focus:ring-2 focus:ring-yellow-500 outline-none" 
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-yellow-700 font-medium">Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              className="w-full p-3 border border-yellow-200 rounded-md mt-1 focus:ring-2 focus:ring-yellow-500 outline-none" 
+              required 
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="w-full bg-yellow-600 text-white p-3 rounded-md font-semibold hover:bg-yellow-700 transition shadow-md"
+          >
+            Register
+          </button>
+        </form>
+
+        <p className="text-center mt-6 text-yellow-600">
+          Already have an account?{' '}
+          <Link to="/login" className="text-yellow-800 hover:underline font-medium">
+            Login Here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

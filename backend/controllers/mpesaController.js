@@ -1,5 +1,3 @@
-// This handles the callbacks from Safaricom
-
 import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 import Saving from '../models/Saving.js';
@@ -11,26 +9,53 @@ import sendEmail from '../utils/emailService.js';
 // @access  Public (from Safaricom)
 const stkCallback = asyncHandler(async (req, res) => {
   console.log('--- STK Callback Received ---');
-  console.log(JSON.stringify(req.body, null, 2));
+  // Safely log the body
+  try { console.log(JSON.stringify(req.body, null, 2)); } catch (e) {}
 
   const body = req.body;
+  
+  // Check if body and stkCallback exist
+  if (!body || !body.Body || !body.Body.stkCallback) {
+    console.error('Invalid STK callback payload: Missing Body or stkCallback');
+    return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  }
+
   const checkoutRequestID = body.Body.stkCallback.CheckoutRequestID;
   const resultCode = body.Body.stkCallback.ResultCode;
 
   if (resultCode === 0) {
     // Payment was successful
+    
+    // Check for CallbackMetadata
+    if (!body.Body.stkCallback.CallbackMetadata || !body.Body.stkCallback.CallbackMetadata.Item) {
+      console.error('Invalid STK callback payload: Missing CallbackMetadata');
+      return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+    }
+    
     const metadata = body.Body.stkCallback.CallbackMetadata.Item;
-    const amount = metadata.find(i => i.Name === 'Amount').Value;
-    const mpesaReceipt = metadata.find(i => i.Name === 'MpesaReceiptNumber').Value;
-    const phoneNumber = metadata.find(i => i.Name === 'PhoneNumber').Value;
+    const amountItem = metadata.find(i => i.Name === 'Amount');
+    const mpesaReceiptItem = metadata.find(i => i.Name === 'MpesaReceiptNumber');
+    const phoneNumberItem = metadata.find(i => i.Name === 'PhoneNumber');
 
-    // The AccountReference from the STK push initiation is not in the callback.
-    // We must find the user by phone number.
-    // NOTE: This assumes phone numbers are unique identifiers.
-    const user = await User.findOne({ phone: phoneNumber.toString().slice(-9) }); // Find user by last 9 digits
+    // Check for essential items
+    if (!amountItem || !mpesaReceiptItem || !phoneNumberItem) {
+        console.error('STK Callback: Missing Amount, Receipt, or Phone Number in metadata');
+        return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+    }
+    
+    const amount = amountItem.Value;
+    const mpesaReceipt = mpesaReceiptItem.Value;
+    const phoneNumber = phoneNumberItem.Value.toString(); // e.g., 254115598800
+
+    // --- USER LOOKUP FIX ---
+    // Get the last 9 digits of the phone number to handle 254 vs 07 formats
+    const userPhone = phoneNumber.slice(-9); // e.g., 115598800
+    
+    // Find a user in the DB whose phone number *ends with* those 9 digits
+    const user = await User.findOne({ phone: { $regex: userPhone + '$' } });
 
     if (!user) {
-      console.error(`STK Callback: User not found with phone ${phoneNumber}`);
+      console.error(`STK Callback: User not found with phone ending in ${userPhone} (Full number: ${phoneNumber})`);
       return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
     }
 
@@ -52,8 +77,8 @@ const stkCallback = asyncHandler(async (req, res) => {
       html: `
         <h1>Deposit Successful!</h1>
         <p>Hi ${user.name},</p>
-        <p>Your deposit of **Ksh ${amount}** (Ref: ${mpesaReceipt}) was successful.</p>
-        <p>Your new savings balance is **Ksh ${user.totalSavings}**.</p>
+        <p>Your deposit of <strong>Ksh ${amount}</strong> (Ref: ${mpesaReceipt}) was successful.</p>
+        <p>Your new savings balance is <strong>Ksh ${user.totalSavings}</strong>.</p>
       `,
     });
 
@@ -62,7 +87,6 @@ const stkCallback = asyncHandler(async (req, res) => {
     // Payment failed or was cancelled
     const resultDesc = body.Body.stkCallback.ResultDesc;
     console.error(`STK Callback Failed: ${resultDesc}`);
-    // Optionally, send an email to the user about the failed transaction
   }
 
   // Respond to Safaricom
@@ -74,77 +98,74 @@ const stkCallback = asyncHandler(async (req, res) => {
 // @access  Public (from Safaricom)
 const b2cResultCallback = asyncHandler(async (req, res) => {
   console.log('--- B2C Result Callback Received ---');
-  console.log(JSON.stringify(req.body, null, 2));
+  try { console.log(JSON.stringify(req.body, null, 2)); } catch (e) {}
 
   const result = req.body.Result;
-  const resultCode = result.ResultCode;
 
-  // Get ConversationID to find the loan
-  const conversationID = result.ConversationID;
-  // We should ideally store this ConversationID when we initiate B2C, 
-  // but for simplicity, we'll get the loan ID from remarks.
-
-  const remarks = result.ResultParameters.ResultParameter.find(
-    p => p.Key === 'Remarks'
-  ).Value;
-
-  // Extract loan ID from remarks "FinGrow Loan Disbursement (ID: 60...)"
-  const loanIdMatch = remarks.match(/\(ID: (.*)\)/);
-
-  if (!loanIdMatch || !loanIdMatch[1]) {
-     console.error('B2C Callback: Could not parse Loan ID from remarks:', remarks);
-     return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
-  }
-
-  const loanId = loanIdMatch[1];
-  const loan = await Loan.findById(loanId).populate('user');
-
-  if (!loan) {
-    console.error(`B2C Callback: Loan not found with ID ${loanId}`);
+  // Check for valid result
+  if (!result) {
+    console.error('Invalid B2C callback payload');
     return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
   }
 
-  if (resultCode === 0) {
-    // Disbursement was successful
-    const transactionID = result.ResultParameters.ResultParameter.find(
-      p => p.Key === 'TransactionID'
-    ).Value;
+  const resultCode = result.ResultCode;
 
+  if (resultCode === 0) {
+    // --- SUCCESSFUL DISBURSEMENT ---
+    
+    // 1. Find the Loan ID from Remarks
+    let loanId;
+    if (result.ResultParameters && result.ResultParameters.ResultParameter) {
+        const remarksParam = result.ResultParameters.ResultParameter.find(p => p.Key === 'Remarks');
+        if (remarksParam) {
+            const remarks = remarksParam.Value;
+            const loanIdMatch = remarks.match(/\(ID: (.*)\)/);
+            if (loanIdMatch && loanIdMatch[1]) {
+                loanId = loanIdMatch[1];
+            }
+        }
+    }
+
+    if (!loanId) {
+         console.error('B2C Callback: Could not parse Loan ID from remarks.');
+         return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+    }
+  
+    const loan = await Loan.findById(loanId).populate('user');
+    if (!loan) {
+        console.error(`B2C Callback: Loan not found with ID ${loanId}`);
+        return res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+    }
+
+    // 2. Get Transaction ID
+    const transactionIDItem = result.ResultParameters.ResultParameter.find(p => p.Key === 'TransactionID');
+    const transactionID = transactionIDItem ? transactionIDItem.Value : 'N/A';
+
+    // 3. Update Loan Status
     loan.disbursed = true;
-    // Optionally save the B2C transaction ID to the loan model
-    // loan.disbursementTransactionId = transactionID;
     await loan.save();
 
-    // Send email confirmation
+    // 4. Send email confirmation
     await sendEmail({
       email: loan.user.email,
       subject: 'FinGrow Loan Disbursed!',
       html: `
         <h1>Loan Disbursed!</h1>
         <p>Hi ${loan.user.name},</p>
-        <p>Your loan request for **Ksh ${loan.amount}** has been successfully disbursed to your M-Pesa account.</p>
+        <p>Your loan request for <strong>Ksh ${loan.amount}</strong> has been successfully disbursed to your M-Pesa account.</p>
         <p>Transaction ID: ${transactionID}</p>
-        <p>Your total outstanding loan (including interest) is **Ksh ${loan.totalOwed}**.</p>
+        <p>Your total outstanding loan (including interest) is <strong>Ksh ${loan.totalOwed}</strong>.</p>
       `,
     });
     console.log(`Successfully processed disbursement for loan ${loanId}`);
   } else {
     // Disbursement failed
     const resultDesc = result.ResultDesc;
-    console.error(`B2C Callback Failed for Loan ${loanId}: ${resultDesc}`);
-
-    // Mark loan as approved but not disbursed, or 'failed_disbursement'
-    loan.status = 'approved'; // It's still approved, but...
-    loan.disbursed = false; // ...failed to send.
-    await loan.save();
-
-    // Notify admin and user that disbursement failed
-    await sendEmail({
-       email: loan.user.email,
-       subject: 'FinGrow Loan Disbursement FAILED',
-       html: `<p>Hi ${loan.user.name}, We apologize, but the disbursement for your approved loan (ID: ${loanId}) failed. Please contact support.</p>`,
-    });
-    // TODO: Notify admin as well
+    console.error(`B2C Callback Failed: ${resultDesc}`);
+    
+    // Note: We can't update the specific loan status easily on failure here 
+    // because we don't have the Loan ID in the failure message metadata reliably.
+    // In a production app, we would map OriginatorConversationID to the Loan ID in the database.
   }
 
   // Respond to Safaricom
@@ -157,7 +178,6 @@ const b2cResultCallback = asyncHandler(async (req, res) => {
 const b2cQueueCallback = (req, res) => {
   console.log('--- B2C Queue Timeout Received ---');
   console.log(JSON.stringify(req.body, null, 2));
-  // Log this for debugging, but no major action needed
   res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
 };
 

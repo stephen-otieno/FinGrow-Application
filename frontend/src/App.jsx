@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 
 // Components
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -50,8 +49,7 @@ function App() {
             </Route>
           </Routes>
         </main>
-        {/* 3. Footer is now outside the <main> tag */}
-        <Footer />
+        
       </div>
     </AuthProvider>
   );
