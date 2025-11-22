@@ -1,73 +1,233 @@
-# 💼 FinGrow - MERN Welfare Management System
+question-ai-logo
+managemanage
+managemanage
+useruser
+fullfull
+closeclose
+Chat AI
+Hello! Is there any question I can help you with?
+Which city is known as the “Big Apple” in the United States?
+Who was the first person to step foot on the moon?
+Ask AI
 
-FinGrow is a **full-stack digital welfare management platform** built using the **MERN stack** (MongoDB, Express.js, React, Node.js).  
-It provides a clean, modern interface for welfare members to **manage their savings**, **apply for loans**, and **track their financial progress**.  
+more
+Disable
+up
+Disable until next visit
+Disable for this page
+Disable for this website
+Disable globally
+You can re-enable in setting
+# FinGrow - Digital Welfare Management Platform
 
-The platform automates core welfare operations with:
-- **M-Pesa Daraja APIs** for seamless mobile money deposits and disbursements.
-- **Nodemailer** for automated email notifications.
-
----
-
-## 🌐 Screenshot
-<!-- Replace the link below with an actual screenshot of your landing page -->
-![Landing Page Screenshot](https://your-screenshot-url.com)
-
----
-
-## 🚀 Core Features
-
-### 🔐 Authentication
-- Secure JWT (JSON Web Token) authentication.
-- Password hashing using **bcrypt**.
-- Role-based access (Member vs. Admin).
-
-### 💰 Savings Management
-- Members can make direct deposits through **M-Pesa STK Push**.
-- Real-time balance and transaction tracking.
-
-### 🏦 Loan Workflow
-- Members can request loans online.
-- Admins review, approve, or decline requests.
-- Approved loans automatically disbursed via **M-Pesa B2C**.
-- Automatic **5% interest calculation** on approved loans.
-
-### 📊 User Dashboard
-- Personalized view showing:
-  - Total savings
-  - Loan status
-  - Transaction history
-
-### 🧭 Admin Dashboard
-- Comprehensive overview of:
-  - All members
-  - Loan requests
-  - Deposits and disbursements
-
-### ✉️ Email Notifications
-Automated emails (via Nodemailer) are sent for:
-- User Registration  
-- Savings Deposit  
-- Loan Request  
-- Loan Approval / Rejection  
-- Loan Disbursement  
-
-### 📬 Public Contact Form
-A public-facing contact page allows anyone to message the admin.  
-Messages are saved in the database and trigger email notifications.
+FinGrow is a full-stack MERN web application designed to digitize and automate the operations of informal welfare groups ("Chamas"). It streamlines savings, loan processing, and record-keeping through real-time dashboards and seamless M-Pesa integration.
 
 ---
 
-## 🧰 Technology Stack
+## 🚀 Project Overview
 
-| Layer        | Technology |
-|---------------|-------------|
-| **Frontend** | React (Vite) + Tailwind CSS |
-| **Backend**  | Node.js + Express.js |
-| **Database** | MongoDB Atlas |
-| **Payments** | Safaricom M-Pesa Daraja API (STK Push & B2C) |
-| **Email**    | Nodemailer (using Gmail transport) |
+Traditional welfare groups often struggle with:
+
+- Manual record-keeping
+- Lack of transparency
+- Delayed loan processing
+
+*FinGrow* addresses these challenges by offering:
+
+- *Real-time Transparency*: Members can view their savings and loan status 24/7.
+- *Automated Transactions*: Integrated with Safaricom Daraja API for instant savings (STK Push) and loan disbursements (B2C).
+- *Admin Efficiency*: A dedicated dashboard for approving loans and monitoring group finances.
 
 ---
 
-## 📂 Project Structure
+## 🛠 Tech Stack
+
+| Layer       | Technology |
+|-------------|------------|
+| Frontend    | React.js (Vite), Tailwind CSS, React Router v6 |
+| Backend     | Node.js, Express.js |
+| Database    | MongoDB Atlas (Mongoose) |
+| Payments    | Safaricom M-Pesa Daraja API (C2B & B2C) |
+| Email       | Nodemailer (Gmail SMTP) |
+| Testing     | Ngrok (for webhook testing) |
+
+---
+
+## Project Structure
+```
+
+fingrow/
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── utils/
+│   ├── .env
+│   └── server.js
+├── frontend/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── App.jsx
+│   ├── .env
+│   └── vite.config.js
+└── README.md
+```
+
+## ✨ Key Features
+
+- *User Authentication*: Secure Sign Up/Login with JWT & bcrypt.
+- *Savings Management*: Members deposit funds via M-Pesa STK Push.
+- *Loan Workflow*:
+  - Members request loans via the dashboard.
+  - Admins approve/decline requests.
+  - Approved loans are disbursed via M-Pesa B2C API.
+- *Loan Repayment*: Members repay loans via M-Pesa; balances update automatically.
+- *Dashboards*:
+  - User: View savings, active loans, and transaction history.
+  - Admin: Manage users, approve loans, and monitor system-wide stats.
+- *Notifications*: Automated emails for registration, deposits, loan status, and disbursements.
+
+---
+
+## 🖼 Screenshot
+### Landing page
+<img width="1905" height="819" alt="image" src="https://github.com/user-attachments/assets/ff45a8f4-3848-44ec-a6a1-b0385539b6ae" />
+
+### user dashboard
+<img width="1919" height="875" alt="image" src="https://github.com/user-attachments/assets/192673d4-cbfc-4efb-b84a-fb73497e8ca5" />
+
+## admin dashboard
+<img width="1919" height="871" alt="image" src="https://github.com/user-attachments/assets/c7ae5ac6-cef8-4e09-8c6b-f7ab57a04bec" />
+
+---
+
+## ⚙ Installation & Setup
+
+### Prerequisites
+
+- Node.js (v16+)
+- MongoDB Atlas Account
+- Safaricom Developer Account (Daraja Sandbox)
+- Ngrok (for webhook testing)
+
+### 1. Clone the Repository
+
+bash
+git clone https://github.com/your-username/fingrow.git
+cd fingrow
+
+
+### 2. Backend Setup
+
+bash
+cd backend
+npm install
+
+
+Create a .env file in the backend directory:
+
+env
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Database
+MONGO_URI=your_mongodb_connection_string
+
+# Auth
+JWT_SECRET=your_jwt_secret_key
+
+# Email Service
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_google_app_password
+
+# M-Pesa Configuration
+DARAJA_ENV=sandbox
+DARAJA_CONSUMER_KEY=your_consumer_key
+DARAJA_CONSUMER_SECRET=your_consumer_secret
+DARAJA_SHORTCODE=174379
+DARAJA_PASSKEY=your_lipa_na_mpesa_online_passkey
+
+# M-Pesa B2C
+B2C_INITIATOR_NAME=testapi
+B2C_SECURITY_CREDENTIAL=your_generated_security_credential
+B2C_SHORTCODE=174379
+
+# Callback URLs (replace with your Ngrok URL)
+MPESA_CALLBACK_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/callback
+B2C_QUEUE_TIMEOUT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/queue
+B2C_RESULT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/result
+
+
+### 3. Frontend Setup
+
+bash
+cd ../frontend
+npm install
+
+
+Create a .env file in the frontend directory:
+
+env
+VITE_API_URL=http://localhost:5000
+
+
+---
+
+## 🏃‍♂ Running the Application
+
+Run the following in separate terminals:
+
+### Terminal 1: Backend
+
+bash
+cd backend
+npm run server
+
+
+### Terminal 2: Frontend
+
+bash
+cd frontend
+npm run dev
+
+
+### Terminal 3: Ngrok
+
+bash
+ngrok http 5000
+
+
+Update the .env file with the Ngrok HTTPS URL and restart the backend server.
+
+---
+
+## 🔑 Admin Access
+
+By default, users register as "members". To promote a user to admin:
+
+1. Open MongoDB Compass or Atlas.
+2. Navigate to the users collection.
+3. Find the user document.
+4. Change the role field from "member" to "admin".
+
+---
+
+## 🧪 Testing M-Pesa (Sandbox)
+
+- *Savings (STK Push)*: Trigger a deposit from the User Dashboard using a test number or the Daraja simulator.
+- *Loan Disbursement*:
+  - Request a loan as a user.
+  - Use test number 254708374149 for disbursement.
+  - Approve the loan from the Admin Dashboard.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
