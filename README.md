@@ -1,23 +1,3 @@
-question-ai-logo
-managemanage
-managemanage
-useruser
-fullfull
-closeclose
-Chat AI
-Hello! Is there any question I can help you with?
-Which city is known as the “Big Apple” in the United States?
-Who was the first person to step foot on the moon?
-Ask AI
-
-more
-Disable
-up
-Disable until next visit
-Disable for this page
-Disable for this website
-Disable globally
-You can re-enable in setting
 # FinGrow - Digital Welfare Management Platform
 
 FinGrow is a full-stack MERN web application designed to digitize and automate the operations of informal welfare groups ("Chamas"). It streamlines savings, loan processing, and record-keeping through real-time dashboards and seamless M-Pesa integration.
@@ -117,66 +97,74 @@ fingrow/
 
 ### 1. Clone the Repository
 
-bash
+```
 git clone https://github.com/your-username/fingrow.git
 cd fingrow
-
+```
 
 ### 2. Backend Setup
 
-bash
+```
 cd backend
 npm install
 
-
+```
 Create a .env file in the backend directory:
 
 env
 # Server
+```
 PORT=5000
 NODE_ENV=development
-
+```
 # Database
+```
 MONGO_URI=your_mongodb_connection_string
-
+```
 # Auth
+```
 JWT_SECRET=your_jwt_secret_key
-
+```
 # Email Service
+```
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_google_app_password
-
+```
 # M-Pesa Configuration
+```
 DARAJA_ENV=sandbox
 DARAJA_CONSUMER_KEY=your_consumer_key
 DARAJA_CONSUMER_SECRET=your_consumer_secret
 DARAJA_SHORTCODE=174379
 DARAJA_PASSKEY=your_lipa_na_mpesa_online_passkey
-
+```
 # M-Pesa B2C
+```
 B2C_INITIATOR_NAME=testapi
 B2C_SECURITY_CREDENTIAL=your_generated_security_credential
 B2C_SHORTCODE=174379
-
+```
 # Callback URLs (replace with your Ngrok URL)
+```
 MPESA_CALLBACK_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/callback
 B2C_QUEUE_TIMEOUT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/queue
 B2C_RESULT_URL=https://your-ngrok-url.ngrok-free.app/api/mpesa/b2c/result
-
+```
 
 ### 3. Frontend Setup
 
-bash
+```
 cd ../frontend
 npm install
-
+```
 
 Create a .env file in the frontend directory:
 
 env
+```
 VITE_API_URL=http://localhost:5000
 
-
+```
 ---
 
 ## 🏃‍♂ Running the Application
@@ -185,23 +173,23 @@ Run the following in separate terminals:
 
 ### Terminal 1: Backend
 
-bash
+```
 cd backend
 npm run server
-
+```
 
 ### Terminal 2: Frontend
 
-bash
+```
 cd frontend
 npm run dev
-
+```
 
 ### Terminal 3: Ngrok
 
-bash
+```
 ngrok http 5000
-
+```
 
 Update the .env file with the Ngrok HTTPS URL and restart the backend server.
 
